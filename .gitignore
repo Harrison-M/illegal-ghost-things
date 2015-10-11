@@ -1,0 +1,3 @@
+*.qauth.js
+node_modules
+used.db

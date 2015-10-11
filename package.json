@@ -1,0 +1,22 @@
+{
+  "name": "illegalghostthings",
+  "version": "8.0.0",
+  "description": "ghost_things, but illegal",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "illegal",
+    "ghost",
+    "bikes"
+  ],
+  "author": "Harrison Massey",
+  "license": "MIT",
+  "dependencies": {
+    "deck": "0.0.4",
+    "node-leveldb": "^1.0.1",
+    "qauth": "^0.1.1",
+    "twitter": "^1.2.5"
+  }
+}
