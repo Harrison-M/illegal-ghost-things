@@ -20,7 +20,7 @@ qauth.init().then(function (twitterConfig) {
                 return uniqueTweet(tweets);
             }
 
-            var newTweet = 'illegal ' + toUse.text.replace(/~/g, '').replace(/^@.* /, '');
+            var newTweet = 'illegal ' + toUse.text.replace(/~/g, '').replace(/@\S+ /g, '');
             client.post('statuses/update', {status: newTweet}, function(err, tweet) {
                 if (err) {
                     console.error(err);
@@ -29,6 +29,6 @@ qauth.init().then(function (twitterConfig) {
                 LevelDB.set(toUse.id, tweet.id);
                 process.exit();
             });
-        })(tweets);
+        })(shuffled);
     });
 });
