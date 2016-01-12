@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "deck": "0.0.4",
-    "node-leveldb": "^1.0.1",
+    "level": "^1.4.0",
     "qauth": "^0.1.1",
     "twitter": "^1.2.5"
   }

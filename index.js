@@ -1,33 +1,37 @@
-var deck = require('deck');
-var LevelDB = require('node-leveldb');
-var qauth = require('qauth');
-var Twitter = require('twitter');
+const deck = require('deck');
+const level = require('level');
+const qauth = require('qauth');
+const Twitter = require('twitter');
 
-LevelDB.open(__dirname + '/used.db');
+const db = level(__dirname + '/used.db');
 
 qauth.init().then(function (twitterConfig) {
-    var client = new Twitter(twitterConfig);
+    const client = new Twitter(twitterConfig);
 
     client.get('statuses/user_timeline', { count: 200, include_rts: false, screen_name: 'ghost_things' }, function (err, tweets) {
         if (err) {
             console.error(err);
             return;
         }
-        var shuffled = deck.shuffle(tweets);
+        const shuffled = deck.shuffle(tweets);
         (function uniqueTweet(tweets) {
-            var toUse = tweets.shift();
-            if (LevelDB.get(toUse.id)) {
-                return uniqueTweet(tweets);
-            }
-
-            var newTweet = 'illegal ' + toUse.text.replace(/~/g, '').replace(/@\S+ /g, '');
-            client.post('statuses/update', {status: newTweet}, function(err, tweet) {
-                if (err) {
+            const toUse = tweets.shift();
+            db.get(toUse.id, function(err) {
+                if (err && !err.notFound) {
                     console.error(err);
                     return;
+                } else if (!err) {
+                    return uniqueTweet(tweets);
                 }
-                LevelDB.set(toUse.id, tweet.id);
-                process.exit();
+                const newTweet = 'illegal ' + toUse.text.replace(/~/g, '').replace(/@\S+ /g, '');
+                client.post('statuses/update', { status: newTweet }, function(err, tweet) {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+                    db.put(toUse.id, tweet.id);
+                    process.exit();
+                });
             });
         })(shuffled);
     });
